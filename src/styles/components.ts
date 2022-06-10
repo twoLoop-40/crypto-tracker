@@ -89,9 +89,15 @@ export const Tab = styled.span<{ isActive: boolean }>`
   background-color: rgba(0, 0, 0, 0.5);
   padding: 7px 0px;
   border-radius: 10px;
-  color: ${(props) =>
-    props.isActive ? props.theme.textColor : props.theme.accentColor};
+	&:hover {
+		a {
+			color: ${(props) => props.theme.textColor};
+		}	
+	}
+  
   a {
+		color: ${(props) =>
+    props.isActive ? props.theme.textColor : props.theme.accentColor};
     display: block;
   }
 `;
