@@ -6,16 +6,22 @@ import { InfoData, ITicker, RouteParams } from "../apis/UserTypes"
 import { Container, Description, Header,  
 	Overview, OverviewItem, RollBackButton, 
 	Tab, Tabs, Title } from "../styles/components"
+import { themeCarrier } from "../App"
+import { dayAndNight } from "../apis/customApi"
 
 
 const fetchCoinInfo = fetcher(baseUrlForCoin('infos')!)
 const fetchTickersInfo = fetcher(baseUrlForCoin('tickers')!)
+
 type ContextType = {
-	coinId: string
+	coinId: string;
+	tickersData: ITicker;
 }
 
 function Coin () {
-	
+	const setTheme = themeCarrier.emitStateAction()!
+	const mode = themeCarrier.emitCurrentState()!
+	const changeMode = () => setTheme((mode: boolean) => !mode)
 	const { coinId } = useParams<keyof RouteParams>()
 	const { isLoading: infoLoading, data: infoData } = useQuery(
 		["info", coinId],
@@ -32,8 +38,11 @@ function Coin () {
 
 	const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
-
+	
 	return (
+		<>
+		<RollBackButton onClick={changeMode}>{dayAndNight(mode)}</RollBackButton>
+		
 		<Container>
 			<Helmet>
 				<title>
@@ -79,22 +88,23 @@ function Coin () {
 							</OverviewItem>
 						</Overview>
 						<Tabs>
-            <Tab isActive={chartMatch?.params.coinId !== null}>
+            <Tab isActive={chartMatch !== null}>
               <Link to={`/${coinId}/chart`}>Chart</Link>
             </Tab>
-            <Tab isActive={priceMatch?.params.coinId !== null}>
+            <Tab isActive={priceMatch !== null}>
               <Link to={`/${coinId}/price`}>Price</Link>
             </Tab>
           	</Tabs>
-						<Outlet context={{coinId}}/>
+						<Outlet context={{coinId, tickersData}}/>
 					</>				
 				)
 			}
 		</>
 	</Container>
+	</>
 	)
 }
-export function useCoinId () {
+export function useCoinData () {
 	return useOutletContext<ContextType>()
 }
 export default Coin

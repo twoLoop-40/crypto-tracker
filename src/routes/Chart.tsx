@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { baseUrlForCoin, fetcher, unknownToType } from "../apis/fetchers";
 import { IHistorical } from "../apis/UserTypes";
-import { useCoinId } from "./Coin";
+import { useCoinData } from "./Coin";
 import ApexChart from "react-apexcharts";
 
 
@@ -11,14 +11,14 @@ function makeCandleData (priceHistory: IHistorical[]) {
 		const y = [priceInfo.open, priceInfo.high, priceInfo.low, priceInfo.close]
 		return { x, y }
 	}
-	return priceHistory && priceHistory.length !== 0 
-		? priceHistory.map(priceInfo => candleForm(priceInfo)) 
+	return priceHistory && Array.isArray(priceHistory)
+		? priceHistory.map((priceInfo: IHistorical) => candleForm(priceInfo)) 
 		: undefined	
 }
 
 export function Chart () {
 
-	const { coinId } = useCoinId()
+	const { coinId } = useCoinData()
 	const fetchCoinHistory = () => {
 		const endDate = Math.floor(Date.now() / 1000);
 		const daysBefore = (days: number) => {

@@ -12,6 +12,7 @@ export const RollBackButton = styled.button`
 	font-size: x-large;
 	border-radius: 10px;
 	margin-right: 25px;
+	margin-left: 10px;
 	margin-bottom: 10px;
 	padding: 10px;
 	background-color: ${(props) => props.theme.buttonColor};
@@ -26,7 +27,7 @@ export const RollBackButton = styled.button`
 `
 export const Container = styled.div`
 	padding: 0px 20px;
-	max-width: 480px;
+	max-width: 500px;
 	margin: 0 auto;
 `
 export const Header = styled.div`
@@ -38,7 +39,7 @@ export const Header = styled.div`
 export const CoinsList = styled.ul`
 `
 export const Coin = styled.li`
-	background-color: white;
+	background-color: ${(props) => props.theme.coinBoxColor};
 	color: ${(props) => props.theme.bgColor};
 	margin-bottom: 10px;
 	border-radius: 15px;
@@ -89,7 +90,7 @@ export const Tab = styled.span<{ isActive: boolean }>`
   padding: 7px 0px;
   border-radius: 10px;
   color: ${(props) =>
-    props.isActive ? props.theme.accentColor : props.theme.textColor};
+    props.isActive ? props.theme.textColor : props.theme.accentColor};
   a {
     display: block;
   }

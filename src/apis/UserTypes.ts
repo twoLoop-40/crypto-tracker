@@ -80,16 +80,149 @@ export interface IHistorical {
   close: number;
   volume: number;
   market_cap: number;
+	error?: string;
 }
 
 export type ISetStateAction <T> = React.Dispatch<React.SetStateAction<T>>
 
 export class StateCarrier <T> {
-  constructor(public stateAction?: ISetStateAction<T>) {}
+  constructor(
+		public stateAction?: ISetStateAction<T>,
+		public currentState? : T
+	) {}
   addStateAction (stateAction : ISetStateAction<T>) {
     this.stateAction = stateAction
   }
+	addState (currentState: T) {
+		this.currentState = currentState
+	}
   emitStateAction () {
     return this.stateAction
   }
+	emitCurrentState () {
+		return this.currentState
+	}
+}
+
+export interface ICustomLabelBar {
+	series?: ApexAxisChartSeries | ApexNonAxisChartSeries;
+	options?: ApexCharts.ApexOptions;
+}
+
+
+const chartBarVar: ICustomLabelBar = {
+	series: [{
+		data: []
+	}],
+	options: {
+		theme: {
+			mode: "dark",
+		},
+		chart: {
+			type: 'bar',
+			height: 500,
+			width: 500
+		},
+		plotOptions: {
+			bar: {
+				barHeight: '100%',
+				distributed: true,
+				horizontal: true,
+				dataLabels: {
+					position: 'bottom'
+				},
+			}
+		},
+		colors: [
+			'#33b2df', '#546E7A', '#d4526e', '#13d8aa', 
+			'#A5978B', '#2b908f', '#f9a3a4', '#90ee7e',
+			'#f48024'
+		],
+		dataLabels: {
+			enabled: true,
+			textAnchor: 'start',
+			style: {
+				colors: ['#fff']
+			},
+			formatter: function (val: string, opt:any) {
+				return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+			},
+			offsetX: 0,
+			dropShadow: {
+				enabled: true
+			}
+		},
+		stroke: {
+			width: 1,
+			colors: ['#fff']
+		},
+		xaxis: {
+			categories: ['15min', '30min', '1h', '6h', '12h', '24h', '7d',
+				'30d', '1y'
+			],
+		},
+		yaxis: {
+			labels: {
+				show: false
+			}
+		},
+		title: {
+				text: 'Percent Change according to Time',
+				align: 'center',
+				floating: true
+		},
+		tooltip: {
+			theme: 'dark',
+			x: {
+				show: false
+			},
+			y: {
+				title: {
+					formatter: function () {
+						return ''
+					}
+				}
+			}
+		}
+	},
+};
+
+interface IPriceInfo {
+	"price": number,
+	"volume_24h":	number,
+	"volume_24h_change_24h": number,
+	"market_cap": number,
+	"market_cap_change_24h": number,
+	"percent_change_15m": number,
+	"percent_change_30m": number,
+	"percent_change_1h": number,
+	"percent_change_6h": number,
+	"percent_change_12h": number,
+	"percent_change_24h": number,
+	"percent_change_7d": number,
+	"percent_change_30d": number,
+	"percent_change_1y": number,
+	"ath_price": number,
+	"ath_date": string,
+	"percent_from_price_ath": number
+}
+export function priceChangeModel (tickersData: ITicker) {
+	const pricePercentChange = () => {
+		const { quotes: { USD } }: { quotes: {USD: IPriceInfo} } = tickersData
+		const priceChange = [
+			USD.percent_change_15m, 
+			USD.percent_change_30m, 
+			USD.percent_change_1h,
+			USD.percent_change_6h,
+			USD.percent_change_12h,
+			USD.percent_change_24h,
+			USD.percent_change_7d,
+			USD.percent_change_30d,
+			USD.percent_change_1y
+		]
+		return priceChange	
+	}
+	const basicModel: ICustomLabelBar = { ...chartBarVar }
+	basicModel.series = [{data: pricePercentChange()}]
+	return basicModel
 }
