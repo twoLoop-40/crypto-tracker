@@ -5,6 +5,7 @@ import Coins from "./routes/Coins"
 import { Price } from "./routes/Price"
 
 function Router () {
+	console.log(process.env.PUBLIC_URL)
 	return <BrowserRouter>
 		<Routes>
 			<Route path={process.env.PUBLIC_URL+"/"} element={<Coins />} />
