@@ -38,7 +38,7 @@ function Coin () {
 
 	const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
-	
+	console.log(process.env.PUBLIC_URL)
 	return (
 		<>
 		<RollBackButton onClick={changeMode}>{dayAndNight(mode)}</RollBackButton>
