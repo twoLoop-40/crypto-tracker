@@ -51,7 +51,7 @@ function Coin () {
 			</Helmet>
 			<Header>
 				<Title>
-					<Link to="/">
+					<Link to={process.env.PUBLIC_URL}>
 						<RollBackButton>&#10094;</RollBackButton>
 					</Link>
 					<span>{loading? "Loading...": infoData?.name}</span>
